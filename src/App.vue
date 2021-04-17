@@ -7,7 +7,7 @@
     <section id="grid-container" class="grid-container">
       <div id="grid" class="grid">
         <div v-for="row in grid" v-bind:key="row.id" class="grid-row">
-          <div v-for="node in row" v-bind:key="node.id" v-bind:class="{ start: node.isStart, goal: node.isGoal }" class="grid-node">
+          <div v-for="node in row" v-bind:key="node.id" v-bind:class="{ start: node.isStart, goal: node.isGoal, wall: node.isWall }" class="grid-node">
 
           </div>
         </div>
@@ -42,7 +42,8 @@ export default {
           x: col,
           y: row,
           isStart: row == 3 && col == 5,
-          isGoal: row == 14 && col == 33
+          isGoal: row == 14 && col == 33,
+          isWall: row == 18 && col == 27
         }
         currentRow.push(node);
       }
@@ -143,6 +144,10 @@ body {
 
 .grid-node.goal {
   background-color: #FF4136;
+}
+
+.grid-node.wall {
+  background-color: var(--grid-border-color);
 }
 
 </style>
