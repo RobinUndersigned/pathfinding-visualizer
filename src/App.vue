@@ -1,28 +1,18 @@
 <template>
-    <header id="header-container" class="header-container">
-      <div class="header-container-inner">
-        Header
-      </div>
-    </header>
-    <section id="grid-container" class="grid-container">
-      <div id="grid" class="grid">
-        <div v-for="row in grid" v-bind:key="row.id" class="grid-row">
-          <div v-for="node in row" v-bind:key="node.id" v-bind:class="{ start: node.isStart, goal: node.isGoal, wall: node.isWall }" class="grid-node">
+    <HeaderComponent></HeaderComponent>
 
-          </div>
-        </div>
-      </div>
-    </section>
+    <GridComponent v-bind:grid="this.grid"></GridComponent>
 
 </template>
 
 <script>
-
-
+import GridComponent from "./components/Grid/GridComponent";
+import HeaderComponent from "./components/HeaderComponent";
 export default {
   name: 'App',
   components: {
-
+    GridComponent,
+    HeaderComponent
   },
   data() {
     return {
@@ -32,7 +22,15 @@ export default {
     }
   },
   methods: {
-
+    clearGrid() {
+      this.grid.forEach(row => {
+        row.forEach(node => {
+          node.isStart = false;
+          node.isGoal = false;
+          node.isWall = false;
+        })
+      })
+    }
   },
   mounted() {
     for(let row = 0; row < this.rowMax; row++) {
@@ -68,6 +66,10 @@ export default {
   box-sizing: border-box;
 }
 
+button, label, input, select {
+  outline: none;
+}
+
 html {
   height: 100%;
 }
@@ -100,7 +102,51 @@ body {
 }
 
 .header-container-inner {
-  margin: 1rem;
+  padding: 1em 3em;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.header-controls-container {
+  flex: 1 1 0%;
+  padding: 1em 0;
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.header-controls button {
+  padding: .75em 1em;
+  background-color: #01FF70;
+  border-radius: 5px;
+  color: white;
+  border: none;
+}
+
+.header-controls select {
+  padding: .75em 1em;
+  border-radius: 5px;
+}
+
+.header-controls label {
+  display: flex;
+  align-self: center;
+  flex-direction: row;
+  margin-right: 1rem;
+}
+
+.header-controls {
+  min-width: 80%;
+  max-width: 80%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.header-controls-algorithm {
+  display: flex;
+  flex-direction: row;
 }
 
 .grid-container {
@@ -121,7 +167,6 @@ body {
   flex-direction: row;
   height: 30px;
 }
-
 
 .grid-node {
   width: var(--node-size);
