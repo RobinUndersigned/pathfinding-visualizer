@@ -1,6 +1,11 @@
 <template>
   <div class="grid-row">
-    <GridNodeComponent v-for="node in gridRow" v-bind:key="node.id" v-bind:gridNode="node" v-bind:class="{ start: node.isStart, goal: node.isGoal, wall: node.isWall }" class="grid-node"></GridNodeComponent>
+    <GridNodeComponent
+        v-for="node in gridRow"
+        v-bind:key="node.id"
+        v-bind:gridNode="node"
+        :id="node.x + '-' + node.y"
+    ></GridNodeComponent>
   </div>
 
 </template>
@@ -9,7 +14,7 @@
 import GridNodeComponent from "./GridNodeComponent";
 export default {
   name: "GridRowComponent",
-  props: ["gridRow"],
+  props: ["gridRow", "rowId"],
   components: {
     GridNodeComponent
   }
@@ -17,5 +22,10 @@ export default {
 </script>
 
 <style scoped>
-
+.grid-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+}
 </style>
