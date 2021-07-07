@@ -1,5 +1,8 @@
 <template>
-  <div class="grid-node" v-on:mouseover="putWall" v-on:click.exact="hold = !hold" v-on:click.ctrl="update()" v-bind:class="{ start: gridNode.isStart, goal: gridNode.isGoal, wall: gridNode.isWall, visited: gridNode.visited, unvisited: !gridNode.visited }"></div>
+  <div class="grid-node-container">
+    <div class="grid-node" v-on:mouseover="putWall" v-on:click.exact="hold = !hold" v-on:click.ctrl="update()" v-bind:class="{ start: gridNode.isStart, goal: gridNode.isGoal, wall: gridNode.isWall, visited: gridNode.visited, unvisited: !gridNode.visited }"></div>
+  </div>
+
 </template>
 
 <script>
@@ -30,18 +33,26 @@ export default {
 </script>
 
 <style scoped>
-.grid-node {
-  width: var(--node-size);
-  height: var(--node-size);
+.grid-node-container {
   border-top: 1px solid var(--grid-border-color);
   border-left: 1px solid var(--grid-border-color);
 }
 
-.grid-node:last-of-type {
+.grid-node-container {
+  width: var(--node-size);
+  height: var(--node-size);
+}
+
+.grid-node {
+  width: calc(var(--node-size) - 1px);
+  height: calc(var(--node-size) - 1px);
+}
+
+.grid-node-container:last-of-type {
   border-right: 1px solid var(--grid-border-color);
 }
 
-.grid-row:last-of-type > .grid-node {
+.grid-row:last-of-type > .grid-node-container {
   border-bottom: 1px solid var(--grid-border-color);
 }
 
@@ -72,7 +83,5 @@ export default {
   animation-name: visited;
   animation-duration: 1s;
   animation-fill-mode: forwards;
-  outline: 1px rgba(255, 255, 255, 0.541);
-  outline-style: solid;
 }
 </style>
