@@ -1,11 +1,24 @@
 <template>
   <div class="grid-node-container">
-    <div class="grid-node" v-on:mouseover="putWall" v-on:click.exact="hold = !hold" v-on:click.ctrl="update()" v-bind:class="{ start: gridNode.isStart, goal: gridNode.isGoal, wall: gridNode.isWall, visited: gridNode.visited, unvisited: !gridNode.visited }"></div>
+    <div
+        class="grid-node"
+        v-on:mouseover="putWall()"
+        v-on:click.exact="this.node.isWall = true;"
+        v-on:mousedown="activateDefinePathState()"
+        v-on:mouseup="deactivateDefinePathState()"
+        v-bind:class="{
+          start: gridNode.isStart,
+          goal: gridNode.isGoal,
+          wall: gridNode.isWall,
+          visited: gridNode.visited,
+          unvisited: !gridNode.visited,
+        }"></div>
   </div>
 
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "GridNodeComponent",
   props: ["gridNode"],
@@ -17,16 +30,23 @@ export default {
   },
   methods: {
     putWall() {
-      if (this.hold === true && this.draw == true) {
+      if (this.definePath) {
         console.log("fire!");
         this.node.isWall = true;
       }
-    }
+    },
+    activateDefinePathState() {
+      this.$store.commit('toggleDefinePathState', true);
+    },
+    deactivateDefinePathState() {
+      this.$store.commit('toggleDefinePathState', false);
+    },
   },
   computed: {
+    ...mapState(['definePath']),
     node() {
       return this.gridNode;
-    }
+    },
   }
 }
 
@@ -78,6 +98,7 @@ export default {
     background-color: rgba(136, 247, 223, 0.699);
   }
 }
+
 .grid-node.visited {
   background-color: rgba(255, 255, 255, 0.89);
   animation-name: visited;

@@ -8,7 +8,7 @@
         <div id="header-controls" class="header-controls">
           <div class="header-controls-algorithm">
             <label for="algorithm">Select algorithm:</label>
-            <select name="algorithm" id="algorithm" v-on:input="setAlgorithm">
+            <select name="algorithm" id="algorithm" v-model="selectedAlgorithm">
               <option value="1">Dijkstra’s Algorithm</option>
               <option value="2">A* Search</option>
               <option value="3">Bellman-Ford’s Algorithm</option>
@@ -34,10 +34,6 @@ export default {
     }
   },
   methods: {
-    setAlgorithm(event) {
-      this.selectedAlgorithm = event.target.value;
-      console.log(this.selectedAlgorithm)
-    },
     visualize() {
       console.log(this.selectedAlgorithm);
       this.$emit('visualize', this.selectedAlgorithm);

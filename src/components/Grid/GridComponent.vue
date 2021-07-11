@@ -1,7 +1,14 @@
 <template>
   <section id="grid-container" class="grid-container">
     <div id="grid" class="grid">
-      <GridRowComponent v-for="(row, index) in grid" v-bind:key="row.id" v-bind:gridRow="row" v-bind:rowId="index" :id="'row' + '-' + index"  class="grid-row"></GridRowComponent>
+      <GridRowComponent
+          v-for="(row, index) in grid"
+          v-bind:key="row.id"
+          v-bind:gridRow="row"
+          v-bind:rowId="index"
+          :id="'row' + '-' + index"
+          class="grid-row">
+      </GridRowComponent>
     </div>
   </section>
 </template>

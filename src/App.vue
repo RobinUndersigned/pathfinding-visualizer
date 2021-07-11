@@ -1,12 +1,13 @@
 <template>
+  <div id="visualizer">
     <HeaderComponent
         @clearGrid="clearGrid"
         @visualize="visualizeAlgorithm"
-        ref="headerComponent"
-    ></HeaderComponent>
+        ref="headerComponent">
+    </HeaderComponent>
 
     <GridComponent v-bind:grid="this.grid" ref="gridComponent"></GridComponent>
-
+  </div>
 </template>
 
 <script>
@@ -105,5 +106,10 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+#visualizer {
+  height: 100vh;
+  width: 100vw;
 }
 </style>
