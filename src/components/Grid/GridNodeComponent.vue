@@ -3,7 +3,7 @@
     <div
         class="grid-node"
         v-on:mouseover="putWall()"
-        v-on:click.exact="this.node.isWall = true;"
+        v-on:click="this.node.isWall = true"
         v-on:mousedown="activateDefinePathState()"
         v-on:mouseup="deactivateDefinePathState()"
         v-bind:class="{
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     putWall() {
-      if (this.definePath) {
+      if (this.definePath && !this.node.isWall && !this.node.isGoal && !this.node.isStart) {
         console.log("fire!");
         this.node.isWall = true;
       }
