@@ -7,6 +7,10 @@
           v-bind:gridRow="row"
           v-bind:rowId="index"
           :id="'row' + '-' + index"
+
+
+
+
           class="grid-row">
       </GridRowComponent>
     </div>
