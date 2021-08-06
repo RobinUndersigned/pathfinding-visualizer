@@ -1,12 +1,15 @@
 <template>
   <div id="visualizer">
     <HeaderComponent
-        @clearGrid="clearGrid"
-        @visualize="visualizeAlgorithm"
-        ref="headerComponent">
-    </HeaderComponent>
+      ref="headerComponent"
+      @clearGrid="clearGrid"
+      @visualize="visualizeAlgorithm"
+    />
 
-    <GridComponent v-bind:grid="this.grid" ref="gridComponent"></GridComponent>
+    <GridComponent
+      ref="gridComponent"
+      :grid="grid"
+    />
   </div>
 </template>
 
@@ -29,14 +32,22 @@ export default {
       selectedAlgorithm: null
     }
   },
+  mounted() {
+    for(let row = 0; row < this.rowMax; row++) {
+      const currentRow = []
+      for(let col = 0; col < this.colMax; col++) {
+        const node = new Node(col, row,)
+        currentRow.push(node);
+      }
+      this.grid.push(currentRow);
+    }
+  },
   methods: {
     clearGrid() {
      this.$refs.gridComponent.clearGrid();
     },
 
     async visualizeAlgorithm(algorithm) {
-      console.log(algorithm);
-
       for(let row = 0; row < this.rowMax; row++) {
         for (let col = 0; col < this.colMax; col++) {
           if (!this.grid[row][col].isWall && !this.grid[row][col].isStart && !this.grid[row][col].isTarget) {
@@ -47,16 +58,6 @@ export default {
       }
     }
   },
-  mounted() {
-    for(let row = 0; row < this.rowMax; row++) {
-      const currentRow = []
-      for(let col = 0; col < this.colMax; col++) {
-        const node = new Node(col, row,)
-        currentRow.push(node);
-      }
-      this.grid.push(currentRow);
-    }
-  }
 }
 </script>
 
