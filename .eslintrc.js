@@ -6,6 +6,7 @@ module.exports = {
     extends: [
         "eslint:recommended",
         "prettier",
+
     ],
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",

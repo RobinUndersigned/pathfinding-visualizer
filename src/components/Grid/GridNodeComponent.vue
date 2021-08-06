@@ -8,11 +8,12 @@
         v-on:mouseup="deactivateDefinePathState()"
         v-bind:class="{
           start: gridNode.isStart,
-          goal: gridNode.isGoal,
+          goal: gridNode.isTarget,
           wall: gridNode.isWall,
           visited: gridNode.visited,
           unvisited: !gridNode.visited,
-        }"></div>
+        }">
+    </div>
   </div>
 
 </template>
@@ -30,7 +31,7 @@ export default {
   },
   methods: {
     putWall() {
-      if (this.definePath && !this.node.isWall && !this.node.isGoal && !this.node.isStart) {
+      if (this.definePath && !this.node.isWall && !this.node.isTarget && !this.node.isStart) {
         console.log("fire!");
         this.node.isWall = true;
       }
@@ -77,10 +78,11 @@ export default {
 }
 
 .grid-node.start {
-  background-color: #01FF70;
+  background: url('~@/assets/images/triangletwo-right.svg') center;
+  content: ">";
 }
 
-.grid-node.goal {
+.grid-node.target {
   background-color: #FF4136;
 }
 

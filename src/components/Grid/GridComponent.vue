@@ -7,10 +7,6 @@
           v-bind:gridRow="row"
           v-bind:rowId="index"
           :id="'row' + '-' + index"
-
-
-
-
           class="grid-row">
       </GridRowComponent>
     </div>
@@ -32,7 +28,7 @@ export default {
       this.grid.forEach(row => {
         row.forEach(node => {
           node.isStart = false;
-          node.isGoal = false;
+          node.isTarget = false;
           node.isWall = false;
           node.visited = false;
           node.unvisited = true;
@@ -51,8 +47,8 @@ export default {
 }
 
 .grid {
-  height: 600px;
-  width: 1200px;
+  height: 800px;
+  width: 1400px;
   margin: 1rem auto;
 }
 </style>

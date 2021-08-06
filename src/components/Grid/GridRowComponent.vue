@@ -26,6 +26,6 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
-  height: 30px;
+  height: var(--node-size);
 }
 </style>

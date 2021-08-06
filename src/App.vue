@@ -13,6 +13,8 @@
 <script>
 import GridComponent from "./components/Grid/GridComponent";
 import HeaderComponent from "./components/HeaderComponent";
+import Node from "./lib/Node";
+
 export default {
   name: 'App',
   components: {
@@ -21,8 +23,8 @@ export default {
   },
   data() {
     return {
-      rowMax: 20,
-      colMax: 40,
+      rowMax: 32,
+      colMax: 56,
       grid: [],
       selectedAlgorithm: null
     }
@@ -37,7 +39,7 @@ export default {
 
       for(let row = 0; row < this.rowMax; row++) {
         for (let col = 0; col < this.colMax; col++) {
-          if (!this.grid[row][col].isWall && !this.grid[row][col].isStart && !this.grid[row][col].isGoal) {
+          if (!this.grid[row][col].isWall && !this.grid[row][col].isStart && !this.grid[row][col].isTarget) {
             this.grid[row][col].visited = true;
             this.grid[row][col].unvisited = false;
           }
@@ -49,14 +51,15 @@ export default {
     for(let row = 0; row < this.rowMax; row++) {
       const currentRow = []
       for(let col = 0; col < this.colMax; col++) {
-        let node = {
-          x: col,
-          y: row,
-          isStart: row == 3 && col == 5,
-          isGoal: row == 14 && col == 33,
-          isWall: row == 18 && col == 27,
-          visited: false,
-        }
+        const node = new Node(
+            col,
+            row,
+            row == 3 && col == 5,
+            row == 14 && col == 33,
+            row == 18 && col == 27,
+            false
+        )
+
         currentRow.push(node);
       }
       this.grid.push(currentRow);
@@ -72,7 +75,7 @@ export default {
   --font-family-main: Lato,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;
   --background-main: #ffffff;
   --background-secondary: #001f3f;
-  --node-size: 30px;
+  --node-size: 25px;
   --grid-border-color: #111111;
   --bg-node-visizted: red;
 }
