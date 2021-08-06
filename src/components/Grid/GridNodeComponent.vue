@@ -1,38 +1,49 @@
 <template>
   <div class="grid-node-container">
     <div
-        class="grid-node"
-        v-on:mouseover="putWall()"
-        v-on:click="this.node.isWall = true"
-        v-on:mousedown="activateDefinePathState()"
-        v-on:mouseup="deactivateDefinePathState()"
-        v-bind:class="{
-          start: gridNode.isStart,
-          goal: gridNode.isTarget,
-          wall: gridNode.isWall,
-          visited: gridNode.visited,
-          unvisited: !gridNode.visited,
-        }">
-    </div>
+      class="grid-node"
+      :class="{
+        start: node.isStart,
+        target: node.isTarget,
+        wall: node.isWall,
+        visited: node.visited,
+        unvisited: !node.visited,
+      }"
+      @click="updateNodeType()"
+      @mouseover="drawWall()"
+      @mousedown="activateDefinePathState()"
+      @mouseup="deactivateDefinePathState()"
+    />
   </div>
-
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import Node from "../../lib/Node";
 export default {
   name: "GridNodeComponent",
-  props: ["gridNode"],
+  props: {
+    gridNode: {
+      type: Node,
+      default: new Node(null, null),
+    }
+  },
   data() {
     return {
       hold: false,
       draw: true,
     }
   },
+  computed: {
+    ...mapState(['definePath']),
+    ...mapGetters(['hasStart', 'hasTarget']),
+    node() {
+      return this.gridNode;
+    },
+  },
   methods: {
-    putWall() {
+    drawWall() {
       if (this.definePath && !this.node.isWall && !this.node.isTarget && !this.node.isStart) {
-        console.log("fire!");
         this.node.isWall = true;
       }
     },
@@ -42,13 +53,19 @@ export default {
     deactivateDefinePathState() {
       this.$store.commit('toggleDefinePathState', false);
     },
-  },
-  computed: {
-    ...mapState(['definePath']),
-    node() {
-      return this.gridNode;
+    updateNodeType() {
+      console.log("click");
+      if (!this.hasStart) {
+        this.node.isStart = true;
+        this.$store.commit('setStartNode', this.node);
+      } else if (this.hasStart && !this.hasTarget) {
+        this.node.isTarget = true;
+        this.$store.commit('setTargetNode', this.node);
+      } else {
+        this.node.isWall = true;
+      }
     },
-  }
+  },
 }
 
 </script>
@@ -79,11 +96,10 @@ export default {
 
 .grid-node.start {
   background: url('~@/assets/images/triangletwo-right.svg') center;
-  content: ">";
 }
 
 .grid-node.target {
-  background-color: #FF4136;
+  background: url('~@/assets/images/target.svg') center;
 }
 
 .grid-node.wall {

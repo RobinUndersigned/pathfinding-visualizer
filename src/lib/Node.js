@@ -1,11 +1,20 @@
 class Node {
-    constructor(x, y, isStart, isTarget, isWall, visited) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.isStart = isStart;
-        this.isTarget = isTarget;
-        this.isWall = isWall;
-        this.visited = visited;
+        this.isStart = false;
+        this.isTarget = false;
+        this.isWall = false;
+        this.visited = false;
+        this.unvisited = true;
+    }
+
+    reset() {
+      this.isStart = false;
+      this.isTarget = false;
+      this.isWall = false;
+      this.visited = false;
+      this.unvisited = true;
     }
 }
 

@@ -1,23 +1,31 @@
 <template>
   <div class="grid-row">
     <GridNodeComponent
-        v-for="node in gridRow"
-        v-bind:key="node.id"
-        v-bind:gridNode="node"
-        :id="node.x + '-' + node.y"
-    ></GridNodeComponent>
+      v-for="node in gridRow"
+      :id="node.x + '-' + node.y"
+      :key="node.id"
+      :grid-node="node"
+    />
   </div>
-
 </template>
 
 <script>
 import GridNodeComponent from "./GridNodeComponent";
 export default {
   name: "GridRowComponent",
-  props: ["gridRow", "rowId"],
   components: {
     GridNodeComponent
-  }
+  },
+  props: {
+    gridRow: {
+      type: Array,
+      default: null,
+    },
+    rowId: {
+      type: Number,
+      default: null,
+    }
+  },
 }
 </script>
 

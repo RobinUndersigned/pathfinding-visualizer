@@ -1,14 +1,20 @@
 <template>
-  <section id="grid-container" class="grid-container">
-    <div id="grid" class="grid">
+  <section
+    id="grid-container"
+    class="grid-container"
+  >
+    <div
+      id="grid"
+      class="grid"
+    >
       <GridRowComponent
-          v-for="(row, index) in grid"
-          v-bind:key="row.id"
-          v-bind:gridRow="row"
-          v-bind:rowId="index"
-          :id="'row' + '-' + index"
-          class="grid-row">
-      </GridRowComponent>
+        v-for="(row, index) in grid"
+        :id="'row' + '-' + index"
+        :key="row.id"
+        :grid-row="row"
+        :row-id="index"
+        class="grid-row"
+      />
     </div>
   </section>
 </template>
@@ -19,19 +25,22 @@ import GridRowComponent from "./GridRowComponent";
 
 export default {
   name: "GridComponent",
-  props: ["grid"],
   components: {
     GridRowComponent
   },
+  props: {
+    grid: {
+      type: Array,
+      default: null,
+    }
+  },
   methods: {
     clearGrid(){
+      console.log("test");
       this.grid.forEach(row => {
         row.forEach(node => {
-          node.isStart = false;
-          node.isTarget = false;
-          node.isWall = false;
-          node.visited = false;
-          node.unvisited = true;
+          node.reset()
+          this.$store.commit('resetState');
         })
       })
     }

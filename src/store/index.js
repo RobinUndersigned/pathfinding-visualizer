@@ -1,14 +1,23 @@
 import { createStore } from 'vuex'
+import Node from "../lib/Node";
 
 // Create a new store instance.
 const store = createStore({
-    state () {
+    state() {
         return {
             definePath: false,
             startNode: null,
-            goalNode: null,
+            targetNode: null,
         }
     },
+  getters: {
+      hasStart: (state) => {
+        return state.startNode != null;
+      },
+      hasTarget: (state) => {
+        return state.targetNode != null;
+      }
+  },
     mutations: {
         toggleDefinePathState (state, value) {
             state.definePath = value;
@@ -16,8 +25,12 @@ const store = createStore({
         setStartNode (state, node) {
             state.startNode = node;
         },
-        setGoalNode (state, node) {
-            state.goalNode = node;
+        setTargetNode (state, node) {
+            state.targetNode = node;
+        },
+        resetState (state) {
+          state.startNode = null;
+          state.targetNode = null;
         },
     }
 })

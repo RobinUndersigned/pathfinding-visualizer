@@ -51,15 +51,7 @@ export default {
     for(let row = 0; row < this.rowMax; row++) {
       const currentRow = []
       for(let col = 0; col < this.colMax; col++) {
-        const node = new Node(
-            col,
-            row,
-            row == 3 && col == 5,
-            row == 14 && col == 33,
-            row == 18 && col == 27,
-            false
-        )
-
+        const node = new Node(col, row,)
         currentRow.push(node);
       }
       this.grid.push(currentRow);
