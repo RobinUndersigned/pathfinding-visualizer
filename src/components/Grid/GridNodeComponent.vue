@@ -7,7 +7,8 @@
         target: node.isTarget,
         wall: node.isWall,
         visited: node.visited,
-        unvisited: !node.visited,
+        animate: node.animateVisited,
+        path: node.isOnShortestPath,
       }"
       @click="updateNodeType()"
       @mouseover="drawWall()"
@@ -57,6 +58,7 @@ export default {
       console.log("click");
       if (!this.hasStart) {
         this.node.isStart = true;
+        this.node.distance = 0;
         this.$store.commit('setStartNode', this.node);
       } else if (this.hasStart && !this.hasTarget) {
         this.node.isTarget = true;
@@ -117,9 +119,31 @@ export default {
   }
 }
 
-.grid-node.visited {
-  background-color: rgba(255, 255, 255, 0.89);
+@keyframes shortestPath {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(255, 254, 106);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(255, 254, 106);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgb(255, 254, 106);
+  }
+}
+
+.grid-node.animate {
   animation-name: visited;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+.grid-node.path {
+  animation-name: shortestPath;
   animation-duration: 1s;
   animation-fill-mode: forwards;
 }

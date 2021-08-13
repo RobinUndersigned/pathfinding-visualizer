@@ -5,16 +5,24 @@ class Node {
         this.isStart = false;
         this.isTarget = false;
         this.isWall = false;
+        this.isOnShortestPath = false;
+        this.animateVisited = false;
         this.visited = false;
-        this.unvisited = true;
+        this.distance = Infinity;
+        this.previousNode = null;
     }
 
     reset() {
       this.isStart = false;
       this.isTarget = false;
       this.isWall = false;
+      this.isOnShortestPath = false;
+      this.isOnShortestPath = false;
+      this.animateVisited = false;
       this.visited = false;
-      this.unvisited = true;
+      this.distance = Infinity;
+      this.previousNode = null;
+      this.animateVisited = false;
     }
 }
 

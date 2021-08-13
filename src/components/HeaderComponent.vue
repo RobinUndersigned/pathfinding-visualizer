@@ -1,23 +1,53 @@
 <template>
-  <header id="header-container" class="header-container">
+  <header
+    id="header-container"
+    class="header-container"
+  >
     <div class="header-container-inner">
-      <div id="logo" class="logo">
+      <div
+        id="logo"
+        class="logo"
+      >
         <h1>Pathfinding Visualizer</h1>
       </div>
-      <div id="header-controls-container" class="header-controls-container">
-        <div id="header-controls" class="header-controls">
+      <div
+        id="header-controls-container"
+        class="header-controls-container"
+      >
+        <div
+          id="header-controls"
+          class="header-controls"
+        >
           <div class="header-controls-algorithm">
             <label for="algorithm">Select algorithm:</label>
-            <select name="algorithm" id="algorithm" v-model="selectedAlgorithm">
-              <option value="1">Dijkstra’s Algorithm</option>
-              <option value="2">A* Search</option>
-              <option value="3">Bellman-Ford’s Algorithm</option>
-              <option value="4">Depth First Search</option>
+            <select
+              id="algorithm"
+              v-model="selectedAlgorithm"
+              name="algorithm"
+            >
+              <option value="1">
+                Dijkstra’s Algorithm
+              </option>
+              <option value="2">
+                A* Search
+              </option>
+              <option value="3">
+                Bellman-Ford’s Algorithm
+              </option>
+              <option value="4">
+                Depth First Search
+              </option>
             </select>
           </div>
-          <button v-on:click="$emit('clearGrid')">Clear Grid</button>
-          <button>Reset Pointers</button>
-          <button v-on:click="visualize">Visualize</button>
+          <button @click="$emit('clearGrid')">
+            Clear Grid
+          </button>
+          <button>
+            Reset Pointers
+          </button>
+          <button @click="visualize">
+            Visualize
+          </button>
         </div>
       </div>
     </div>
@@ -27,7 +57,7 @@
 <script>
 export default {
   name: "HeaderComponent",
-
+  emits: ['visualize', 'clearGrid'],
   data(){
     return {
       selectedAlgorithm: 1,

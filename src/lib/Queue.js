@@ -25,4 +25,7 @@ export class Queue {
   show(){
     return this.a;
   }
+  sortByDistance() {
+    this.a.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+  }
 }

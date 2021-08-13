@@ -36,7 +36,7 @@ export default {
     for(let row = 0; row < this.rowMax; row++) {
       const currentRow = []
       for(let col = 0; col < this.colMax; col++) {
-        const node = new Node(col, row,)
+        const node = new Node(col, row,);
         currentRow.push(node);
       }
       this.grid.push(currentRow);
@@ -48,14 +48,9 @@ export default {
     },
 
     async visualizeAlgorithm(algorithm) {
-      for(let row = 0; row < this.rowMax; row++) {
-        for (let col = 0; col < this.colMax; col++) {
-          if (!this.grid[row][col].isWall && !this.grid[row][col].isStart && !this.grid[row][col].isTarget) {
-            this.grid[row][col].visited = true;
-            this.grid[row][col].unvisited = false;
-          }
-        }
-      }
+      this.$refs.gridComponent.dijkstra();
+      await this.$refs.gridComponent.animateDijkstra();
+      await this.$refs.gridComponent.animateShortestPath();
     }
   },
 }
