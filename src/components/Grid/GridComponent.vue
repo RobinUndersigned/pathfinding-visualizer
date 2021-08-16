@@ -1,4 +1,26 @@
 <template>
+  <div class="container">
+    <div
+      v-if="!hasStart"
+      class="alert alert-hint"
+    >
+      Lege zunächst den Startpunkt fest!
+    </div>
+
+    <div
+      v-if="hasStart && !hasTarget"
+      class="alert alert-hint"
+    >
+      Lege jetzt noch Zielpunkt fest!
+    </div>
+
+    <div
+      v-if="hasStart && hasTarget"
+      class="alert alert-success"
+    >
+      Du kannst per Click & Drag nun optional noch Mauern auf dem Grid platzieren.
+    </div>
+  </div>
   <section
     id="grid-container"
     class="grid-container"
@@ -23,7 +45,7 @@
 
 import GridRowComponent from "./GridRowComponent";
 import { Queue } from "../../lib/Queue";
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
   name: "GridComponent",
@@ -45,6 +67,7 @@ export default {
   },
   computed: {
     ...mapState(['startNode', 'targetNode']),
+    ...mapGetters(['hasStart', 'hasTarget']),
     getGrid() {
       return this.grid;
     },
@@ -67,7 +90,7 @@ export default {
       })
       return queue;
     },
-   dijkstra() {
+   async dijkstra() {
       if (!this.startNode || !this.targetNode) return false;
       this.queuedNodes = this.queueNodes();
 
@@ -84,29 +107,49 @@ export default {
 
         this.visitedNodesInOrder.push(closestNode);
         if (closestNode === this.targetNode) return;
-        this.updateUnvisitedNeighbors(closestNode);
+        await this.animateCurrentNode(closestNode);
+        await this.animateVisited(closestNode);
+
+
+        const unvisitedNeighbors = this.getUnvisitedNeighbors(closestNode);
+        this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
       }
     },
-    animateDijkstra() {
-      for (let i = 0; i <= this.visitedNodesInOrder.length; i++) {
+    animateVisited(currentNode) {
+      return new Promise(resolve => {
         setTimeout(() => {
-          const node = this.visitedNodesInOrder[i];
-          this.getGrid[node.y][node.x].animateVisited = !node.isStart ? true : false;
-        }, 10 * i);
-      }
+          this.getGrid[currentNode.y][currentNode.x].animateVisited = !currentNode.isStart ? true : false;
+          resolve();
+        }, 10);
+      })
+    },
+    animateCurrentNode(currentNode) {
+      this.getGrid[currentNode.y][currentNode.x].isCurrentNode = true;
+      return new Promise(resolve => {
+        setTimeout(() => {
+            this.getGrid[currentNode.y][currentNode.x].isCurrentNode = false;
+            resolve()
+        }, 10);
+      })
     },
     animateShortestPath() {
       this.setShortestPath();
-      for (let i = 0; i < this.shortestPathOrder.length; i++) {
-        setTimeout(() => {
-          const node = this.shortestPathOrder[i];
-          this.getGrid[node.y][node.x].isOnShortestPath = true;
-        }, 50 * i);
-      }
+      return new Promise (resolve => {
+        for (let i = 0; i < this.shortestPathOrder.length; i++) {
+          setTimeout(() => {
+            const node = this.shortestPathOrder[i];
+            if (node) {
+              this.getGrid[node.y][node.x].isOnShortestPath = true;
+            } else {
+              resolve();
+            }
+          }, 50 * i);
+        }
+      })
+
     },
-    updateUnvisitedNeighbors(node) {
-      const unvisitedNeighbors = this.getUnvisitedNeighbors(node);
-      for (const neighbor of unvisitedNeighbors) {
+    updateUnvisitedNeighbors(node, neighbors) {
+      for (const neighbor of neighbors) {
         this.getGrid[neighbor.y][neighbor.x].distance = node.distance + 1;
         this.getGrid[neighbor.y][neighbor.x].previousNode = node;
       }
@@ -126,20 +169,45 @@ export default {
         this.shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
       }
-    }
+    },
   }
 }
 </script>
 
 <style scoped>
+.container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border: 1px solid;
+  border-radius: 5px;
+  margin: 1.5rem 0;
+  box-shadow: rgba(0,0,0,0.15) 0 0 3px;
+}
+
+.alert-hint {
+  background: var(--alert-hint-bg);
+  border-color: var(--alert-hint-border);
+  color: var(--alert-hint-color);
+}
+
+.alert-success {
+  background: var(--alert-success-bg);
+  border-color: var(--alert-success-border);
+  color: var(--alert-success-color);
+}
+
 .grid-container {
   flex: 1 1 100%;
   display: block;
-  height: 600px;
+  height: 700px;
 }
 
 .grid {
-  height: 800px;
+  height: 700px;
   width: 1400px;
   margin: 1rem auto;
 }

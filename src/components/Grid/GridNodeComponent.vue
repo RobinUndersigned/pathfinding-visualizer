@@ -9,6 +9,7 @@
         visited: node.visited,
         animate: node.animateVisited,
         path: node.isOnShortestPath,
+        currentNode: node.isCurrentNode,
       }"
       @click="updateNodeType()"
       @mouseover="drawWall()"
@@ -44,7 +45,7 @@ export default {
   },
   methods: {
     drawWall() {
-      if (this.definePath && !this.node.isWall && !this.node.isTarget && !this.node.isStart) {
+      if (this.hasStart && this.hasTarget && this.definePath && !this.node.isWall && !this.node.isTarget && !this.node.isStart) {
         this.node.isWall = true;
       }
     },
@@ -55,7 +56,6 @@ export default {
       this.$store.commit('toggleDefinePathState', false);
     },
     updateNodeType() {
-      console.log("click");
       if (!this.hasStart) {
         this.node.isStart = true;
         this.node.distance = 0;
@@ -109,13 +109,24 @@ export default {
 }
 
 @keyframes visited {
-  from {
-    transform: scale(0.1);
-    background-color: rgba(20, 31, 0, 0.89);
+  0% {
+    transform: scale(.3);
+    background-color: rgba(0, 0, 66, 0.75);
+    border-radius: 100%;
   }
-  to {
-    transform: scale(1);
-    background-color: rgba(136, 247, 223, 0.699);
+
+  50% {
+    background-color: rgba(17, 104, 217, 0.75);
+  }
+
+  75% {
+    transform: scale(1.2);
+    background-color: rgba(0, 217, 159, 0.75)
+  }
+
+  100% {
+    transform: scale(1.0);
+    background-color: rgba(0, 190, 218, 0.75);
   }
 }
 
@@ -146,5 +157,9 @@ export default {
   animation-name: shortestPath;
   animation-duration: 1s;
   animation-fill-mode: forwards;
+}
+
+.grid-node.currentNode {
+  background: rgb(255, 254, 106);
 }
 </style>

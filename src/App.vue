@@ -1,5 +1,33 @@
 <template>
   <div id="visualizer">
+    <div
+      id="modal-overlay"
+      class="modal-overlay"
+    >
+      <div class="modal modal-container">
+        <div class="modal-header">
+          Algorithmusinfo
+        </div>
+        <div class="modal-content-container">
+          <div class="modal-content">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
+          </div>
+        </div>
+      </div>
+    </div>
     <HeaderComponent
       ref="headerComponent"
       @clearGrid="clearGrid"
@@ -26,7 +54,7 @@ export default {
   },
   data() {
     return {
-      rowMax: 32,
+      rowMax: 28,
       colMax: 56,
       grid: [],
       selectedAlgorithm: null
@@ -48,8 +76,7 @@ export default {
     },
 
     async visualizeAlgorithm(algorithm) {
-      this.$refs.gridComponent.dijkstra();
-      await this.$refs.gridComponent.animateDijkstra();
+      await this.$refs.gridComponent.dijkstra();
       await this.$refs.gridComponent.animateShortestPath();
     }
   },
@@ -59,13 +86,20 @@ export default {
 <style>
 :root {
   --main-bg-color: white;
+  --secondary-bg-color: #f1f1f1;
+  --tertiary-bg-color: #e6e6e6;
   --text-color-main: #1b272c;
   --font-family-main: Lato,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;
   --background-main: #ffffff;
   --background-secondary: #001f3f;
   --node-size: 25px;
-  --grid-border-color: #111111;
-  --bg-node-visizted: red;
+  --grid-border-color: var(--background-secondary);
+  --alert-hint-bg: #fffcd1;
+  --alert-hint-border: #dcbd32;
+  --alert-hint-color: var(--alert-hint-border);
+  --alert-success-bg: #ecfde8;
+  --alert-success-border: #60b42c;
+  --alert-success-color: var(--alert-success-border);
 }
 
 * {
@@ -85,6 +119,7 @@ body {
   cursor: auto;
   font-family: var(--font-family-main);
   font-style: normal;
+  font-size: 16px;
   font-weight: 400;
   line-height: 150%;
   margin: 0;
@@ -102,5 +137,45 @@ body {
 #visualizer {
   height: 100vh;
   width: 100vw;
+  position: relative;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: -100%;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  align-items: center;
+  display: none;
+}
+
+.modal-container {
+  background: white;
+  width: 800px;
+  margin: auto;
+  border-radius: 5px;
+  box-shadow: rgba(0,0,0,.75) 0px 0px 25px;
+}
+
+.modal-header {
+  color: var(--text-color-main);
+  font-size: 1.5rem;
+  padding: 0.75em;
+  background: var(--secondary-bg-color);
+  border-bottom: var(--tertiary-bg-color) 1px solid;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.modal-content-container {
+  max-height: 700px;
+  overflow: scroll;
+}
+
+.modal-content {
+  padding: 0.75em 1.5em;
+  color: var(--text-color-main);
+  height: auto;
+  line-height: 1.5;
 }
 </style>

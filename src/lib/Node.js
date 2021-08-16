@@ -6,6 +6,7 @@ class Node {
         this.isTarget = false;
         this.isWall = false;
         this.isOnShortestPath = false;
+        this.isCurrentNode = false;
         this.animateVisited = false;
         this.visited = false;
         this.distance = Infinity;
@@ -18,6 +19,7 @@ class Node {
       this.isWall = false;
       this.isOnShortestPath = false;
       this.isOnShortestPath = false;
+      this.isCurrentNode = false;
       this.animateVisited = false;
       this.visited = false;
       this.distance = Infinity;
