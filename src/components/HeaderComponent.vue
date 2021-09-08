@@ -23,12 +23,13 @@
             <select
               id="algorithm"
               v-model="selectedAlgorithm"
+              :disabled="isRunning"
               name="algorithm"
             >
-              <option value="1">
+              <option value="dijkstra">
                 Dijkstra’s Algorithm
               </option>
-              <option value="2">
+              <option value="astar">
                 A* Search
               </option>
               <option value="3">
@@ -39,13 +40,35 @@
               </option>
             </select>
           </div>
-          <button @click="$emit('clearGrid')">
+          <label
+            for="speedSlider"
+            class="header-speed-slider-label"
+          >
+            Adjust Algorithm Speed:
+            <input
+              id="speedSlider"
+              v-model="algorithmSpeed"
+              class="header-speed-slider"
+              type="range"
+              min="1"
+              max="3"
+              step="1"
+              @change="updateAlgorithmSpeed"
+            >
+          </label>
+          <button
+            :disabled="isRunning || !hasTarget"
+            @click="$emit('clearGrid')"
+          >
             Clear Grid
           </button>
           <button>
             Reset Pointers
           </button>
-          <button @click="visualize">
+          <button
+            :disabled="isRunning || !hasTarget"
+            @click="visualize"
+          >
             Visualize
           </button>
         </div>
@@ -55,17 +78,34 @@
 </template>
 
 <script>
+import {mapGetters, mapState} from "vuex";
+
 export default {
   name: "HeaderComponent",
   emits: ['visualize', 'clearGrid'],
   data(){
     return {
-      selectedAlgorithm: 1,
+      selectedAlgorithm: "dijkstra",
+      algorithmSpeed: "3",
     }
   },
+  computed: {
+    ...mapState(['isRunning']),
+    ...mapGetters(['hasStart', 'hasTarget']),
+  },
+  watch: {
+    selectedAlgorithm: {
+      deep: true,
+      handler() {
+        this.$store.commit('setSelectedAlgorithm', this.selectedAlgorithm)
+      },
+    },
+  },
   methods: {
+    updateAlgorithmSpeed() {
+      this.$store.commit('setAlgorithmSpeed', this.algorithmSpeed);
+    },
     visualize() {
-      console.log(this.selectedAlgorithm);
       this.$emit('visualize', this.selectedAlgorithm);
     }
   }
@@ -105,6 +145,11 @@ export default {
   border: none;
 }
 
+.header-controls button:disabled,
+.header-controls button[disabled] {
+  background-color: #b4b4b4;
+}
+
 .header-controls select {
   padding: .75em 1em;
   border-radius: 5px;
@@ -113,8 +158,9 @@ export default {
 .header-controls label {
   display: flex;
   align-self: center;
-  flex-direction: row;
+  flex-direction: column;
   margin-right: 1rem;
+  font-size: 12px;
 }
 
 .header-controls {
@@ -127,5 +173,28 @@ export default {
 .header-controls-algorithm {
   display: flex;
   flex-direction: row;
+}
+
+.header-speed-slider-label {
+  position: relative;
+  margin-top: -35px;
+}
+
+.header-speed-slider-label::before {
+  color: white;
+  left: 0;
+  content: "Slow";
+}
+
+.header-speed-slider-label::after {
+  color: white;
+  right: 0;
+  content: "Fast";
+}
+
+.header-speed-slider-label::before,
+.header-speed-slider-label::after {
+  position: absolute;
+  top: 45px;
 }
 </style>

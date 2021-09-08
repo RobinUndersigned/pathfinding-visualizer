@@ -37,6 +37,8 @@
     <GridComponent
       ref="gridComponent"
       :grid="grid"
+      :row-max="rowMax"
+      :col-max="colMax"
     />
   </div>
 </template>
@@ -57,7 +59,6 @@ export default {
       rowMax: 28,
       colMax: 56,
       grid: [],
-      selectedAlgorithm: null
     }
   },
   mounted() {
@@ -74,10 +75,19 @@ export default {
     clearGrid() {
      this.$refs.gridComponent.clearGrid();
     },
-
     async visualizeAlgorithm(algorithm) {
-      await this.$refs.gridComponent.dijkstra();
-      await this.$refs.gridComponent.animateShortestPath();
+      this.$store.commit('setRunningState', true);
+      switch(algorithm) {
+        case "dijkstra":
+          await this.$refs.gridComponent.dijkstra();
+          await this.$refs.gridComponent.animateShortestPath();
+          break;
+        case "astar":
+          await this.$refs.gridComponent.aStar();
+          await this.$refs.gridComponent.animateShortestPath();
+          break;
+      }
+      this.$store.commit('setRunningState', false);
     }
   },
 }

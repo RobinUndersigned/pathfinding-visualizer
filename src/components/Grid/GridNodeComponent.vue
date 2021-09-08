@@ -11,6 +11,7 @@
         path: node.isOnShortestPath,
         currentNode: node.isCurrentNode,
       }"
+      style="font-size: 10px; text-align: center;"
       @click="updateNodeType()"
       @mouseover="drawWall()"
       @mousedown="activateDefinePathState()"
@@ -37,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['definePath']),
+    ...mapState(['definePath', 'startNode', 'targetNode']),
     ...mapGetters(['hasStart', 'hasTarget']),
     node() {
       return this.gridNode;
@@ -57,8 +58,7 @@ export default {
     },
     updateNodeType() {
       if (!this.hasStart) {
-        this.node.isStart = true;
-        this.node.distance = 0;
+        this.node.makeStartNode(this.targetNode);
         this.$store.commit('setStartNode', this.node);
       } else if (this.hasStart && !this.hasTarget) {
         this.node.isTarget = true;

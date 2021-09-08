@@ -28,4 +28,7 @@ export class Queue {
   sortByDistance() {
     this.a.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
   }
+  sortByHeuristicDistance() {
+    this.a.sort((nodeA, nodeB) => nodeA.heuristicDistance - nodeB.heuristicDistance);
+  }
 }

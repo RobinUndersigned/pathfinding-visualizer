@@ -11,7 +11,7 @@
       v-if="hasStart && !hasTarget"
       class="alert alert-hint"
     >
-      Lege jetzt noch Zielpunkt fest!
+      Lege jetzt noch einen Zielpunkt fest!
     </div>
 
     <div
@@ -46,6 +46,7 @@
 import GridRowComponent from "./GridRowComponent";
 import { Queue } from "../../lib/Queue";
 import {mapGetters, mapState} from "vuex";
+import Node from "../../lib/Node";
 
 export default {
   name: "GridComponent",
@@ -56,17 +57,26 @@ export default {
     grid: {
       type: Array,
       default: null,
-    }
+    },
+    rowMax: {
+      type: Number,
+      default: null,
+    },
+    colMax: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
       queuedNodes: null,
+      running: false,
       visitedNodesInOrder: [],
       shortestPathOrder: [],
     };
   },
   computed: {
-    ...mapState(['startNode', 'targetNode']),
+    ...mapState(['startNode', 'targetNode', 'algorithmSpeed', 'selectedAlgorithm']),
     ...mapGetters(['hasStart', 'hasTarget']),
     getGrid() {
       return this.grid;
@@ -90,14 +100,14 @@ export default {
       })
       return queue;
     },
-   async dijkstra() {
+    async dijkstra() {
       if (!this.startNode || !this.targetNode) return false;
       this.queuedNodes = this.queueNodes();
 
-      while (!!this.queuedNodes.getLength()) {
+      while (!this.queuedNodes.isEmpty()) {
         this.queuedNodes.sortByDistance();
         const closestNode = this.queuedNodes.dequeue();
-
+        if (closestNode === this.targetNode) return;
         // If we encounter a wall, we skip it.
         if (closestNode.isWall) continue;
         // If the closest node is at a distance of infinity,
@@ -106,54 +116,105 @@ export default {
         closestNode.visited = true;
 
         this.visitedNodesInOrder.push(closestNode);
-        if (closestNode === this.targetNode) return;
         await this.animateCurrentNode(closestNode);
         await this.animateVisited(closestNode);
 
-
         const unvisitedNeighbors = this.getUnvisitedNeighbors(closestNode);
-        this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
+        await this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
       }
     },
+    async aStar() {
+      if (!this.startNode || !this.targetNode) return false;
+      this.queuedNodes = this.queueNodes();
+
+      while (!this.queuedNodes.isEmpty()) {
+        this.queuedNodes.sortByHeuristicDistance();
+        const closestNode = this.queuedNodes.dequeue();
+        if (closestNode === this.targetNode) return;
+        // If we encounter a wall, we skip it.
+        if (closestNode.isWall) continue;
+        // If the closest node is at a distance of infinity,
+        // we must be trapped and should therefore stop.
+        if (closestNode.distance === Infinity) return;
+        closestNode.visited = true;
+
+        this.visitedNodesInOrder.push(closestNode);
+        await this.animateCurrentNode(closestNode);
+        await this.animateVisited(closestNode);
+
+        const unvisitedNeighbors = this.getUnvisitedNeighbors(closestNode);
+        await this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
+      }
+    },
+    /**
+     * Animates visited nodes by using a timed promise
+     * @returns {Promise<Node>}
+     */
     animateVisited(currentNode) {
       return new Promise(resolve => {
         setTimeout(() => {
-          this.getGrid[currentNode.y][currentNode.x].animateVisited = !currentNode.isStart ? true : false;
+          this.getGrid[currentNode.y][currentNode.x].animateVisited = !currentNode.isStart;
           resolve();
-        }, 10);
+        }, 10  * this.algorithmSpeed);
       })
     },
+    /**
+     * Animates the current node by using a timed promise
+     * @returns {Promise<Node>}
+     */
     animateCurrentNode(currentNode) {
       this.getGrid[currentNode.y][currentNode.x].isCurrentNode = true;
       return new Promise(resolve => {
         setTimeout(() => {
             this.getGrid[currentNode.y][currentNode.x].isCurrentNode = false;
             resolve()
-        }, 10);
+        }, 10 * this.algorithmSpeed);
       })
     },
+    /**
+     * Animates the shortest path by using a timed promise
+     * @returns {Promise<Node>}
+     */
     animateShortestPath() {
       this.setShortestPath();
       return new Promise (resolve => {
         for (let i = 0; i < this.shortestPathOrder.length; i++) {
           setTimeout(() => {
             const node = this.shortestPathOrder[i];
-            if (node) {
-              this.getGrid[node.y][node.x].isOnShortestPath = true;
-            } else {
-              resolve();
-            }
-          }, 50 * i);
+            this.getGrid[node.y][node.x].isOnShortestPath = true;
+          }, (50 * i) * this.algorithmSpeed);
         }
+        resolve();
       })
 
     },
+    /**
+     * Updates Poperties on unvisited neighbors
+     * @param node
+     * @param neighbors
+     * @returns {Promise<unknown>}
+     */
     updateUnvisitedNeighbors(node, neighbors) {
-      for (const neighbor of neighbors) {
-        this.getGrid[neighbor.y][neighbor.x].distance = node.distance + 1;
-        this.getGrid[neighbor.y][neighbor.x].previousNode = node;
-      }
+      return new Promise(resolve => {
+        for (const neighbor of neighbors) {
+          this.getGrid[neighbor.y][neighbor.x].distance = node.distance + 1;
+          this.getGrid[neighbor.y][neighbor.x].previousNode = node;
+          if (this.selectedAlgorithm === "astar") {
+            /**
+             * @see: https://www.geeksforgeeks.org/a-search-algorithm/
+             */
+            this.getGrid[neighbor.y][neighbor.x].manhattanDistance = Math.abs(neighbor.x - this.targetNode.x) + Math.abs(neighbor.y - this.targetNode.y);
+            this.getGrid[neighbor.y][neighbor.x].heuristicDistance = this.getGrid[neighbor.y][neighbor.x].distance + this.getGrid[neighbor.y][neighbor.x].manhattanDistance;
+          }
+        }
+        resolve();
+      })
     },
+    /**
+     * Gets neighbor nodes from grid
+     * @param node
+     * @returns {*[]}
+     */
     getUnvisitedNeighbors(node) {
       const neighbors = [];
       const {x, y} = node;
@@ -161,8 +222,12 @@ export default {
       if (y < this.getGrid.length - 1) neighbors.push(this.getGrid[y + 1][x]);
       if (x > 0) neighbors.push(this.getGrid[y][x - 1]);
       if (x < this.getGrid[0].length - 1) neighbors.push(this.getGrid[y][x + 1]);
-      return neighbors.filter(neighbor => !neighbor.visited);
+      // Only push nodes to neighbors array that haven't been visited and aren't walls
+      return neighbors.filter(neighbor => !neighbor.visited && !neighbor.isWall);
     },
+    /**
+     * Sets the shortest path by going through the previous nodes of the target node
+     */
     setShortestPath() {
       let currentNode = this.targetNode;
       while (currentNode !== null) {
