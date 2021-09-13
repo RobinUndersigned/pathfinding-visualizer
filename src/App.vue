@@ -47,6 +47,7 @@
 import GridComponent from "./components/Grid/GridComponent";
 import HeaderComponent from "./components/HeaderComponent";
 import Node from "./lib/Node";
+import {mapState} from "vuex";
 
 export default {
   name: 'App',
@@ -56,10 +57,13 @@ export default {
   },
   data() {
     return {
-      rowMax: 28,
+      rowMax: 22,
       colMax: 56,
       grid: [],
     }
+  },
+  computed: {
+    ...mapState(['shortestPathExists']),
   },
   mounted() {
     for(let row = 0; row < this.rowMax; row++) {
@@ -80,13 +84,22 @@ export default {
       switch(algorithm) {
         case "dijkstra":
           await this.$refs.gridComponent.dijkstra();
-          await this.$refs.gridComponent.animateShortestPath();
+          this.$refs.gridComponent.setShortestPath()
+          if(this.shortestPathExists) {
+            this.$store.commit('setHasShortestPath', true)
+            await this.$refs.gridComponent.animateShortestPath();
+          }
           break;
         case "astar":
           await this.$refs.gridComponent.aStar();
-          await this.$refs.gridComponent.animateShortestPath();
+          this.$refs.gridComponent.setShortestPath()
+          if(this.shortestPathExists) {
+            this.$store.commit('setHasShortestPath', true)
+            await this.$refs.gridComponent.animateShortestPath();
+          }
           break;
       }
+      console.log("test");
       this.$store.commit('setRunningState', false);
     }
   },
@@ -110,6 +123,9 @@ export default {
   --alert-success-bg: #ecfde8;
   --alert-success-border: #60b42c;
   --alert-success-color: var(--alert-success-border);
+  --alert-error-bg: #ffa0a0;
+  --alert-error-border: rgba(180, 44, 49, 0.91);
+  --alert-error-color: var(--alert-error-border);
 }
 
 * {

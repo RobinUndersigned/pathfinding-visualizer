@@ -8,17 +8,24 @@
     </div>
 
     <div
-      v-if="hasStart && !hasTarget"
+      v-if="hasStart && !hasTarget && (shortestPathExists || !shortestPathExists)"
       class="alert alert-hint"
     >
       Lege jetzt noch einen Zielpunkt fest!
     </div>
 
     <div
-      v-if="hasStart && hasTarget"
+      v-if="hasStart && hasTarget && shortestPathExists"
       class="alert alert-success"
     >
       Du kannst per Click & Drag nun optional noch Mauern auf dem Grid platzieren.
+    </div>
+
+    <div
+      v-if="!shortestPathExists"
+      class="alert alert-error"
+    >
+      Es existiert kein kürzester Pfad, da das Ziel nicht erreicht werden kann!
     </div>
   </div>
   <section
@@ -72,24 +79,30 @@ export default {
       queuedNodes: null,
       running: false,
       visitedNodesInOrder: [],
-      shortestPathOrder: [],
+      shortestPathInOrder: [],
     };
   },
   computed: {
-    ...mapState(['startNode', 'targetNode', 'algorithmSpeed', 'selectedAlgorithm']),
+    ...mapState(['startNode', 'targetNode', 'algorithmSpeed', 'shortestPathExists', 'selectedAlgorithm']),
     ...mapGetters(['hasStart', 'hasTarget']),
     getGrid() {
       return this.grid;
-    },
+    }
   },
   methods: {
     clearGrid(){
+      this.visitedNodesInOrder = [];
+      this.shortestPathInOrder = [];
+      this.queuedNodes = null;
       this.grid.forEach(row => {
         row.forEach(node => {
           node.reset()
           this.$store.commit('resetState');
         })
       })
+    },
+    resetVisitedNodes() {
+      this.visitedNodes.flatMap(node => node.reset());
     },
     queueNodes(){
       const queue = new Queue();
@@ -176,13 +189,13 @@ export default {
      * @returns {Promise<Node>}
      */
     animateShortestPath() {
-      this.setShortestPath();
-      return new Promise (resolve => {
-        for (let i = 0; i < this.shortestPathOrder.length; i++) {
+      return new Promise ((resolve, reject) => {
+        if (!this.shortestPathExists) reject();
+        for (let i = 0; i < this.shortestPathInOrder.length; i++) {
           setTimeout(() => {
-            const node = this.shortestPathOrder[i];
+            const node = this.shortestPathInOrder[i];
             this.getGrid[node.y][node.x].isOnShortestPath = true;
-          }, (50 * i) * this.algorithmSpeed);
+          }, 50 * i);
         }
         resolve();
       })
@@ -229,11 +242,16 @@ export default {
      * Sets the shortest path by going through the previous nodes of the target node
      */
     setShortestPath() {
+      if (this.targetNode.previousNode == null) {
+        this.$store.commit('setShortestPathExists', false)
+        return;
+      }
       let currentNode = this.targetNode;
       while (currentNode !== null) {
-        this.shortestPathOrder.unshift(currentNode);
+        this.shortestPathInOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
       }
+      this.$store.commit('setHasShortestPath', true)
     },
   }
 }
@@ -265,6 +283,12 @@ export default {
   color: var(--alert-success-color);
 }
 
+.alert-error {
+  background: var(--alert-error-bg);
+  border-color: var(--alert-error-border);
+  color: var(--alert-error-color);
+}
+
 .grid-container {
   flex: 1 1 100%;
   display: block;
@@ -275,5 +299,9 @@ export default {
   height: 700px;
   width: 1400px;
   margin: 1rem auto;
+}
+
+.grid:hover + .alert {
+  bottom: 500px;
 }
 </style>

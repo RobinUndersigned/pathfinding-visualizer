@@ -8,6 +8,8 @@ const store = createStore({
             definePath: false,
             startNode: null,
             targetNode: null,
+            shortestPathExists: true,
+            hasShortestPath: false,
             algorithmSpeed: 1,
             selectedAlgorithm: "dijkstra",
             isRunning: false,
@@ -40,6 +42,12 @@ const store = createStore({
         setTargetNode (state, node) {
             state.targetNode = node;
         },
+        setShortestPathExists (state, value) {
+          state.shortestPathExists = value;
+        },
+        setHasShortestPath (state, value) {
+          state.hasShortestPath = value;
+        },
         setAlgorithmSpeed (state, algorithmSpeed) {
           switch(algorithmSpeed){
             case "1":
@@ -59,6 +67,9 @@ const store = createStore({
         resetState (state) {
           state.startNode = null;
           state.targetNode = null;
+          state.isRunning = false;
+          state.shortestPathExists = true;
+          state.hasShortestPath = false;
         },
     }
 })

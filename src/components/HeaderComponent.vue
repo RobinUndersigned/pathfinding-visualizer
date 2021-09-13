@@ -66,7 +66,7 @@
             Reset Pointers
           </button>
           <button
-            :disabled="isRunning || !hasTarget"
+            :disabled="(isRunning || !hasTarget || !shortestPathExists) || hasShortestPath"
             @click="visualize"
           >
             Visualize
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "HeaderComponent",
@@ -90,7 +90,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isRunning']),
+    ...mapState(['isRunning', 'shortestPathExists', 'hasShortestPath']),
     ...mapGetters(['hasStart', 'hasTarget']),
   },
   watch: {
