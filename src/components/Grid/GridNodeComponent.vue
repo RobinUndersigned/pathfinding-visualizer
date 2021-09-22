@@ -59,7 +59,7 @@ export default {
     },
     updateNodeType() {
       if (!this.hasStart) {
-        this.node.makeStartNode(this.targetNode);
+        this.node.makeStartNode();
         this.$store.commit('setStartNode', this.node);
       } else if (this.hasStart && !this.hasTarget) {
         this.node.isTarget = true;
