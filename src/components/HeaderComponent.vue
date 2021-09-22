@@ -35,7 +35,7 @@
               <option value="3">
                 Bellman-Ford’s Algorithm
               </option>
-              <option value="4">
+              <option value="dfs">
                 Depth First Search
               </option>
             </select>
@@ -53,7 +53,6 @@
               min="1"
               max="3"
               step="1"
-              @change="updateAlgorithmSpeed"
             >
           </label>
           <button
@@ -67,7 +66,7 @@
           </button>
           <button
             :disabled="(isRunning || !hasTarget || !shortestPathExists) || hasShortestPath"
-            @click="visualize"
+            @click="$emit('visualize', selectedAlgorithm);"
           >
             Visualize
           </button>
@@ -100,15 +99,13 @@ export default {
         this.$store.commit('setSelectedAlgorithm', this.selectedAlgorithm)
       },
     },
-  },
-  methods: {
-    updateAlgorithmSpeed() {
-      this.$store.commit('setAlgorithmSpeed', this.algorithmSpeed);
+    algorithmSpeed: {
+      deep: true,
+      handler() {
+        this.$store.commit('setAlgorithmSpeed', this.algorithmSpeed);
+      },
     },
-    visualize() {
-      this.$emit('visualize', this.selectedAlgorithm);
-    }
-  }
+  },
 }
 </script>
 

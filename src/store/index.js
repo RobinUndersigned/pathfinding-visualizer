@@ -1,5 +1,4 @@
 import { createStore } from 'vuex'
-import Node from "../lib/Node";
 
 // Create a new store instance.
 const store = createStore({

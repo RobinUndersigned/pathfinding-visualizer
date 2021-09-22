@@ -22,9 +22,9 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import Node from "../../lib/Node";
+import Node from '../../lib/Node';
 export default {
-  name: "GridNodeComponent",
+  name: 'GridNodeComponent',
   props: {
     gridNode: {
       type: Node,
@@ -52,6 +52,7 @@ export default {
     },
     activateDefinePathState() {
       this.$store.commit('toggleDefinePathState', true);
+      this.drawWall();
     },
     deactivateDefinePathState() {
       this.$store.commit('toggleDefinePathState', false);
@@ -69,7 +70,6 @@ export default {
     },
   },
 }
-
 </script>
 
 <style scoped>

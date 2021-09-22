@@ -1,33 +1,5 @@
 <template>
   <div id="visualizer">
-    <div
-      id="modal-overlay"
-      class="modal-overlay"
-    >
-      <div class="modal modal-container">
-        <div class="modal-header">
-          Algorithmusinfo
-        </div>
-        <div class="modal-content-container">
-          <div class="modal-content">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. A asperiores blanditiis corporis doloremque, doloribus fuga incidunt inventore ipsam libero modi nam nisi perspiciatis possimus, quaerat saepe tempora vel voluptas voluptates?
-          </div>
-        </div>
-      </div>
-    </div>
     <HeaderComponent
       ref="headerComponent"
       @clearGrid="clearGrid"
@@ -44,10 +16,10 @@
 </template>
 
 <script>
-import GridComponent from "./components/Grid/GridComponent";
-import HeaderComponent from "./components/HeaderComponent";
-import Node from "./lib/Node";
-import {mapState} from "vuex";
+import GridComponent from './components/Grid/GridComponent';
+import HeaderComponent from './components/HeaderComponent';
+import Node from './lib/Node';
+import { mapState } from 'vuex';
 
 export default {
   name: 'App',
@@ -82,24 +54,23 @@ export default {
     async visualizeAlgorithm(algorithm) {
       this.$store.commit('setRunningState', true);
       switch(algorithm) {
-        case "dijkstra":
+        case 'dijkstra':
           await this.$refs.gridComponent.dijkstra();
-          this.$refs.gridComponent.setShortestPath()
-          if(this.shortestPathExists) {
-            this.$store.commit('setHasShortestPath', true)
-            await this.$refs.gridComponent.animateShortestPath();
-          }
           break;
-        case "astar":
+        case 'astar':
           await this.$refs.gridComponent.aStar();
-          this.$refs.gridComponent.setShortestPath()
-          if(this.shortestPathExists) {
-            this.$store.commit('setHasShortestPath', true)
-            await this.$refs.gridComponent.animateShortestPath();
-          }
+          break;
+        case 'dfs':
+          await this.$refs.gridComponent.depthFirstSearch();
           break;
       }
-      console.log("test");
+
+      this.$refs.gridComponent.setShortestPath()
+      if(this.shortestPathExists) {
+        this.$store.commit('setHasShortestPath', true)
+        await this.$refs.gridComponent.animateShortestPath();
+      }
+
       this.$store.commit('setRunningState', false);
     }
   },
