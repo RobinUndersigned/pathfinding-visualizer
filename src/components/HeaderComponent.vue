@@ -9,6 +9,7 @@
         class="logo"
       >
         <h1>Pathfinding Visualizer</h1>
+        <small>Entwickelt von Robin Decker im Rahmen des Independent Course 1 an der HTW Berlin</small>
       </div>
       <div
         id="header-controls-container"
@@ -19,7 +20,7 @@
           class="header-controls"
         >
           <div class="header-controls-algorithm">
-            <label for="algorithm">Select algorithm:</label>
+            <label for="algorithm">Wählen einen Algorithmus:</label>
             <select
               id="algorithm"
               v-model="selectedAlgorithm"
@@ -44,7 +45,7 @@
             for="speedSlider"
             class="header-speed-slider-label"
           >
-            Adjust Algorithm Speed:
+            Algorithmusgeschwindigkeit:
             <input
               id="speedSlider"
               v-model="algorithmSpeed"
@@ -59,16 +60,13 @@
             :disabled="isRunning || !hasTarget"
             @click="$emit('clearGrid')"
           >
-            Clear Grid
-          </button>
-          <button>
-            Reset Pointers
+            Grid leeren
           </button>
           <button
             :disabled="(isRunning || !hasTarget || !shortestPathExists) || hasShortestPath"
             @click="$emit('visualize', selectedAlgorithm);"
           >
-            Visualize
+            Visualisieren!
           </button>
         </div>
       </div>
@@ -123,6 +121,11 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
+}
+
+.logo h1{
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .header-controls-container {
@@ -180,13 +183,13 @@ export default {
 .header-speed-slider-label::before {
   color: white;
   left: 0;
-  content: "Slow";
+  content: "langsam";
 }
 
 .header-speed-slider-label::after {
   color: white;
   right: 0;
-  content: "Fast";
+  content: "schnell";
 }
 
 .header-speed-slider-label::before,
