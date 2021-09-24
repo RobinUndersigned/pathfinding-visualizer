@@ -20,7 +20,7 @@
           class="header-controls"
         >
           <div class="header-controls-algorithm">
-            <label for="algorithm">Wählen einen Algorithmus:</label>
+            <label for="algorithm">Wähle einen Algorithmus:</label>
             <select
               id="algorithm"
               v-model="selectedAlgorithm"
