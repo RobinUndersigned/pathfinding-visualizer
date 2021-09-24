@@ -33,12 +33,6 @@
               <option value="astar">
                 A* Search
               </option>
-              <option value="3">
-                Bellman-Ford’s Algorithm
-              </option>
-              <option value="dfs">
-                Depth First Search
-              </option>
             </select>
           </div>
           <label
