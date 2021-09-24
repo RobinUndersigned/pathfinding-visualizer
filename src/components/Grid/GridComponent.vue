@@ -49,14 +49,13 @@
 </template>
 
 <script>
-
-import GridRowComponent from "./GridRowComponent";
-import { Queue } from "../../lib/Queue";
-import {mapGetters, mapState} from "vuex";
+import GridRowComponent from './GridRowComponent';
+import { Queue } from '../../lib/Queue';
+import {mapGetters, mapState} from 'vuex';
 import Node from "../../lib/Node";
 
 export default {
-  name: "GridComponent",
+  name: 'GridComponent',
   components: {
     GridRowComponent
   },

@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import GridNodeComponent from "./GridNodeComponent";
+import GridNodeComponent from './GridNodeComponent';
 export default {
-  name: "GridRowComponent",
+  name: 'GridRowComponent',
   components: {
     GridNodeComponent
   },

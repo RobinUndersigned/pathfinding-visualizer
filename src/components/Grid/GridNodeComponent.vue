@@ -31,12 +31,6 @@ export default {
       default: new Node(null, null),
     }
   },
-  data() {
-    return {
-      hold: false,
-      draw: true,
-    }
-  },
   computed: {
     ...mapState(['definePath', 'startNode', 'targetNode']),
     ...mapGetters(['hasStart', 'hasTarget']),
