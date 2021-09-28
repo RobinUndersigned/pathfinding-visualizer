@@ -52,7 +52,6 @@
 import GridRowComponent from './GridRowComponent';
 import { Queue } from '../../lib/Queue';
 import {mapGetters, mapState} from 'vuex';
-import Node from "../../lib/Node";
 
 export default {
   name: 'GridComponent',
@@ -99,9 +98,6 @@ export default {
           this.$store.commit('resetState');
         })
       })
-    },
-    resetVisitedNodes() {
-      this.visitedNodesInOrder.flatMap(node => node.reset());
     },
     queueNodes(){
       const queue = new Queue();
@@ -158,28 +154,6 @@ export default {
         await this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
       }
     },
-    async depthFirstSearch() {
-      if (!this.startNode || !this.targetNode) return;
-      this.queuedNodes = new Queue();
-      this.queuedNodes.enqueue(this.getGrid[this.startNode.y][this.startNode.x]);
-      let count = 0;
-      while (!this.queuedNodes.isEmpty()) {
-        const closestNode = this.queuedNodes.dequeue();
-
-        if (closestNode === this.targetNode) return;
-        // If we encounter a wall, we skip it.
-        if (closestNode.isWall) continue;
-
-        closestNode.visited = true;
-        this.visitedNodesInOrder.push(closestNode);
-        await this.animateCurrentNode(closestNode);
-        await this.animateVisited(closestNode);
-
-        const unvisitedNeighbors = this.getUnvisitedNeighbors(closestNode);
-        await this.updateUnvisitedNeighbors(closestNode, unvisitedNeighbors);
-        await unvisitedNeighbors.forEach(neighbor => this.queuedNodes.enqueue(neighbor));
-      }
-    },
     /**
      * Animates visited nodes by using a timed promise
      * @returns {Promise<Node>}
@@ -187,7 +161,7 @@ export default {
     animateVisited(currentNode) {
       return new Promise(resolve => {
         setTimeout(() => {
-          this.getGrid[currentNode.y][currentNode.x].animateVisited = !currentNode.isStart;
+          this.getGrid[currentNode.y][currentNode.x].animateVisited = !currentNode.animateVisited;
           resolve();
         }, 10  * this.algorithmSpeed);
       })
@@ -237,8 +211,13 @@ export default {
             /**
              * @see: https://www.geeksforgeeks.org/a-search-algorithm/
              */
-            this.getGrid[neighbor.y][neighbor.x].manhattanDistance = Math.abs(neighbor.x - this.targetNode.x) + Math.abs(neighbor.y - this.targetNode.y);
-            this.getGrid[neighbor.y][neighbor.x].heuristicDistance = this.getGrid[neighbor.y][neighbor.x].distance + this.getGrid[neighbor.y][neighbor.x].manhattanDistance;
+            this.getGrid[neighbor.y][neighbor.x].manhattanDistance =
+              Math.abs(neighbor.x - this.targetNode.x)
+              + Math.abs(neighbor.y - this.targetNode.y);
+
+            this.getGrid[neighbor.y][neighbor.x].heuristicDistance =
+              this.getGrid[neighbor.y][neighbor.x].distance
+              + this.getGrid[neighbor.y][neighbor.x].manhattanDistance;
           }
         }
         resolve();

@@ -114,6 +114,7 @@ export default {
   padding: 1em 3em;
   height: 100%;
   display: flex;
+  gap: 2rem;
   flex-direction: row;
 }
 
@@ -161,6 +162,7 @@ export default {
   min-width: 80%;
   max-width: 80%;
   display: flex;
+  gap: 1rem;
   justify-content: space-around;
 }
 
